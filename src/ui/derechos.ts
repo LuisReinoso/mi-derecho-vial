@@ -29,6 +29,8 @@ interface Entidad {
   acceso?: string
   pago_en_linea?: string
   pago_presencial?: string
+  aviso_movil?: string
+  si_no_puedes_pagar_en_linea?: string
   direccion_matriz?: string
   telefonos?: string[]
   correo?: string
@@ -67,7 +69,11 @@ function bloqueEntidad(e: Entidad): HTMLElement {
     )
   }
 
-  if (e.acceso) t.append(el('p', { class: 'sutil' }, e.acceso))
+  if (e.acceso) t.append(el('p', {}, e.acceso))
+  if (e.aviso_movil) t.append(el('div', { class: 'aviso' }, e.aviso_movil))
+  if (e.si_no_puedes_pagar_en_linea) {
+    t.append(el('p', {}, `Si no puedes pagar en línea: ${e.si_no_puedes_pagar_en_linea}`))
+  }
   if (e.pago_en_linea) t.append(el('p', {}, `En línea: ${e.pago_en_linea}`))
   if (e.pago_presencial) t.append(el('p', {}, `Presencial: ${e.pago_presencial}`))
   if (e.direccion_matriz) t.append(el('p', { class: 'sutil' }, `Matriz: ${e.direccion_matriz}`))

@@ -14,14 +14,22 @@
       "facilidades_pago": "https://movidelnor.gob.ec/web/webepm/facilidades-de-pago/",
       "consulta_citaciones": "https://servicios.axiscloud.ec/AutoServicio/inicio.jsp?ps_empresa=02&ps_accion=P55",
       "generador_pago": "https://servicios.axiscloud.ec/SVT/paginas/portal/svf_solicitar_servicio.jsp?ps_param_tip_serv=CEW&ps_id_empresa=02",
-      "acceso": "Se entra solo con el número de identificación. El sistema envía un código de verificación al celular y al correo REGISTRADOS, y ese código caduca en 4 minutos. Si tus datos no están al día, en la misma pantalla hay una pestaña de Actualización de Datos.",
+      "acceso": "El buscador que ves al entrar (Tipo de Búsqueda / Valor / Buscar) SOLO consulta: no paga. Para pagar hay que entrar con el botón azul Login de arriba a la derecha, que pide la identificación y manda un código al celular y correo REGISTRADOS. Ese código caduca en 4 minutos. El botón Pagar aparece recién dentro de tu usuario.",
       "pago_en_linea": "Tarjeta de crédito desde el portal.",
       "pago_presencial": "Con tarjeta de otros bancos, en oficinas mediante DataFast, con opción de pago diferido a plazos.",
       "direccion_matriz": "Vicente Rocafuerte 1-43 y Mariano Peñaherrera (Ibarra)",
-      "telefonos": ["(+593) 062 608 497", "(+593) 062 952 894", "(+593) 062 952 019", "Matriculación: (+593) 062 510 770", "Coactivas: (+593) 062 511 972"],
+      "telefonos": [
+        "(+593) 062 608 497",
+        "(+593) 062 952 894",
+        "(+593) 062 952 019",
+        "Matriculación: (+593) 062 510 770",
+        "Coactivas: (+593) 062 511 972"
+      ],
       "correo": "buzon@movidelnor.gob.ec",
       "prefijo_citacion": "MNCEM",
-      "verificado": "2026-08-13"
+      "verificado": "2026-08-13",
+      "aviso_movil": "En un teléfono el botón Login queda oculto y no se alcanza ni abriendo el menú de tres rayas: el portal solo lo muestra desde 768 px de ancho. Activa \"Sitio para computadoras\" en el menú de Chrome, o entra desde una computadora. Comprobado el 13-08-2026.",
+      "si_no_puedes_pagar_en_linea": "Imprime la ORDEN DE PAGO y acércate a una agencia del Banco del Pacífico o a un punto de pago autorizado. Para infracciones basta la cédula; la orden de pago hace falta para matriculación y liberaciones. En Ibarra, pide en ventanilla que cobren también el valor del SISMERT si lo tienes pendiente."
     },
     {
       "codigo": "ANT",
@@ -73,19 +81,33 @@
       "via": "Fiscalía General del Estado",
       "cuando": "Cuando un servidor público exige o recibe dinero indebidamente prevaliéndose del cargo. Eso se llama concusión y está tipificado en el Art. 281 del COIP: es un delito, no una falta administrativa.",
       "url": "https://www.fiscalia.gob.ec/",
-      "que_llevar": ["Grabación de audio o video", "Capturas de las transferencias o mensajes", "Fecha, hora y ubicación exactas", "Número de citación si existe", "Datos del vehículo"]
+      "que_llevar": [
+        "Grabación de audio o video",
+        "Capturas de las transferencias o mensajes",
+        "Fecha, hora y ubicación exactas",
+        "Número de citación si existe",
+        "Datos del vehículo"
+      ]
     },
     {
       "via": "Asuntos Internos de la entidad de control",
       "cuando": "Faltas disciplinarias del agente. Se procesan bajo los Arts. 119, 120 y 121 del COESCOP.",
       "url": null,
-      "que_llevar": ["Relato cronológico de lo ocurrido", "Toda la evidencia recolectada", "Número de citación"]
+      "que_llevar": [
+        "Relato cronológico de lo ocurrido",
+        "Toda la evidencia recolectada",
+        "Número de citación"
+      ]
     },
     {
       "via": "Defensoría Pública",
       "cuando": "Si necesitas patrocinio de abogado y no puedes pagarlo. El patrocinio es gratuito.",
       "url": "https://www.defensoria.gob.ec/",
-      "que_llevar": ["Copia de la citación", "Tu cédula", "El expediente de evidencia que genera esta app"]
+      "que_llevar": [
+        "Copia de la citación",
+        "Tu cédula",
+        "El expediente de evidencia que genera esta app"
+      ]
     }
   ],
   "regla_de_oro_pago": "Ningún pago de una multa se hace en efectivo al agente ni por transferencia a una cuenta personal. Siempre es en el portal de la entidad, en el banco autorizado o en la ventanilla oficial. Si te piden dinero de otra forma, eso ya no es una multa."
