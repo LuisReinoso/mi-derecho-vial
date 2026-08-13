@@ -8,7 +8,8 @@ import {
   pedirPersistencia,
 } from '../evidencia/almacen'
 import type { Caso, Pieza } from '../evidencia/almacen'
-import { tomarFoto, ubicacionActual } from '../evidencia/captura'
+import { ubicacionActual } from '../evidencia/captura'
+import { capturarFoto } from './camara'
 import { descargar, generarExpediente } from '../evidencia/expediente'
 import { avisar, boton, el, vaciar } from './dom'
 
@@ -56,7 +57,7 @@ function tarjetaPieza(pieza: Pieza, alBorrar: () => void): HTMLElement {
   }
 
   tarjeta.append(
-    el('p', { class: 'sutil' }, `SHA-256: ${pieza.hash}`),
+    el('p', { class: 'huella' }, `SHA-256: ${pieza.hash}`),
     boton('Borrar', alBorrar, 'fantasma compacto'),
   )
   return tarjeta
@@ -132,8 +133,15 @@ async function bloqueCaso(caso: Caso, refrescar: () => Promise<void>): Promise<H
       'Tomar foto',
       async () => {
         try {
-          const blob = await tomarFoto()
-          const ubicacion = await ubicacionActual(4000)
+          // El GPS se pide mientras la persona encuadra, no despues de
+          // disparar: si no, la foto tarda segundos en aparecer y parece rota.
+          const ubicacionEnCurso = ubicacionActual(15000)
+          const blob = await capturarFoto()
+          if (!blob) return // canceló
+          const ubicacion = await Promise.race([
+            ubicacionEnCurso,
+            new Promise<null>((r) => setTimeout(() => r(null), 800)),
+          ])
           await guardarPieza({
             caso: caso.id,
             tipo: 'foto',

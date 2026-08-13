@@ -32,6 +32,7 @@ export function mostrarAlAgente(numeral: Numeral): void {
 
   const cerrar = () => {
     soltarPantalla()
+    document.body.classList.remove('capa-abierta')
     capa.remove()
     document.removeEventListener('keydown', alTeclear)
   }
@@ -64,6 +65,7 @@ export function mostrarAlAgente(numeral: Numeral): void {
   })
   document.addEventListener('keydown', alTeclear)
 
+  document.body.classList.add('capa-abierta')
   document.body.append(capa)
   void mantenerPantalla()
 }

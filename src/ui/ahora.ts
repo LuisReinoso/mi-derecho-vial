@@ -20,12 +20,14 @@ import {
   rescatarSesion,
   sesionesInterrumpidas,
 } from '../evidencia/almacen'
-import type { Caso, SesionGrabacion } from '../evidencia/almacen'
+import type { Caso, SesionGrabacion, Ubicacion } from '../evidencia/almacen'
 import { iniciarGrabacion, ubicacionActual } from '../evidencia/captura'
 import type { Grabacion } from '../evidencia/captura'
 import { dictar, hayDictado } from './dictado'
 import type { Dictado } from './dictado'
 import { mostrarAlAgente } from './mostrar'
+import { medidorDeNivel, vistaPreviaDe } from './camara'
+import type { VistaPrevia } from './camara'
 import { avisar, boton, el, vaciar } from './dom'
 
 const REGLA_DE_ORO = (entidadesCrudo as unknown as { regla_de_oro_pago: string }).regla_de_oro_pago
@@ -231,6 +233,10 @@ export function vistaAhora(autoGrabar = false): HTMLElement {
 
   // --- Grabación ------------------------------------------------------------
   const estadoGrabacion = el('p', { class: 'sutil' }, 'Nada se está grabando.')
+  // Ver lo que se está capturando: video en vivo, o el nivel del micrófono.
+  const previa = el('div')
+  let previaActiva: VistaPrevia | null = null
+  let ubicacionDeLaGrabacion: Promise<Ubicacion | null> | null = null
   const btnGrabar = boton('● GRABAR AUDIO', () => void alternarGrabacion(false), 'peligro')
   const btnVideo = boton('Grabar video', () => void alternarGrabacion(true), 'fantasma compacto')
   const btnUbicacion = boton('Guardar mi ubicación', () => void guardarUbicacion(), 'fantasma compacto')
@@ -240,11 +246,18 @@ export function vistaAhora(autoGrabar = false): HTMLElement {
       const g = grabacion
       grabacion = null
       if (cronometro) window.clearInterval(cronometro)
+      previaActiva?.detener()
+      previaActiva = null
       btnGrabar.classList.remove('grabando')
       btnGrabar.textContent = '● GRABAR AUDIO'
       estadoGrabacion.textContent = 'Cerrando la grabación…'
       try {
-        const ubicacion = await ubicacionActual(4000)
+        // La ubicación se pidió al empezar a grabar, así que a estas alturas
+        // ya suele estar resuelta y guardar es inmediato.
+        const ubicacion = await Promise.race([
+          ubicacionDeLaGrabacion ?? Promise.resolve(null),
+          new Promise<null>((r) => setTimeout(() => r(null), 800)),
+        ])
         const pieza = await g.detener(ubicacion)
         estadoGrabacion.textContent = pieza
           ? `Guardado (${formatearDuracion(Date.now() - inicioGrabacion)}). Huella SHA-256: ${pieza.hash.slice(0, 16)}…`
@@ -260,7 +273,10 @@ export function vistaAhora(autoGrabar = false): HTMLElement {
     try {
       await pedirPersistencia()
       const caso = await casoParaGrabar()
+      ubicacionDeLaGrabacion = ubicacionActual(20000)
       grabacion = await iniciarGrabacion({ video, caso: caso.id })
+      previaActiva = video ? vistaPreviaDe(grabacion.flujo) : medidorDeNivel(grabacion.flujo)
+      previa.append(previaActiva.elemento)
       inicioGrabacion = Date.now()
       btnGrabar.classList.add('grabando')
       cronometro = window.setInterval(() => {
@@ -297,7 +313,12 @@ export function vistaAhora(autoGrabar = false): HTMLElement {
   }
 
   const bloqueGrabacion = el('section', { class: 'tarjeta' })
-  bloqueGrabacion.append(btnGrabar, estadoGrabacion, el('div', { class: 'fila' }, btnVideo, btnUbicacion))
+  bloqueGrabacion.append(
+    btnGrabar,
+    previa,
+    estadoGrabacion,
+    el('div', { class: 'fila' }, btnVideo, btnUbicacion),
+  )
   raiz.append(bloqueGrabacion)
 
   raiz.append(el('div', { class: 'aviso rojo' }, REGLA_DE_ORO))

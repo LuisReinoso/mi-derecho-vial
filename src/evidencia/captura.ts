@@ -146,36 +146,3 @@ export async function ubicacionActual(timeoutMs = 8000): Promise<Ubicacion | nul
     )
   })
 }
-
-/**
- * Toma una foto sin abrir la app de cámara del sistema, para no perder tiempo
- * ni sacar al usuario de la app en mitad de un control.
- */
-export async function tomarFoto(camara: 'user' | 'environment' = 'environment'): Promise<Blob> {
-  const flujo = await navigator.mediaDevices.getUserMedia({ video: { facingMode: camara } })
-  try {
-    const video = document.createElement('video')
-    video.srcObject = flujo
-    video.muted = true
-    video.playsInline = true
-    await video.play()
-    await new Promise((r) => setTimeout(r, 300)) // deja que el sensor exponga
-
-    const lienzo = document.createElement('canvas')
-    lienzo.width = video.videoWidth || 1280
-    lienzo.height = video.videoHeight || 720
-    const ctx = lienzo.getContext('2d')
-    if (!ctx) throw new Error('No se pudo dibujar la foto')
-    ctx.drawImage(video, 0, 0, lienzo.width, lienzo.height)
-
-    return await new Promise<Blob>((resolver, rechazar) => {
-      lienzo.toBlob(
-        (b) => (b ? resolver(b) : rechazar(new Error('No se pudo generar la imagen'))),
-        'image/jpeg',
-        0.92,
-      )
-    })
-  } finally {
-    flujo.getTracks().forEach((t) => t.stop())
-  }
-}

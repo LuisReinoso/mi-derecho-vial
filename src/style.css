@@ -31,6 +31,16 @@ body {
   font-size: 17px;
   line-height: 1.5;
   overscroll-behavior-y: none;
+  /* Un hash SHA-256 son 64 caracteres sin un solo hueco donde cortar. Sin
+     esto reventaba el ancho de la pantalla y toda la app quedaba corrida. */
+  overflow-wrap: break-word;
+}
+
+img,
+video,
+audio,
+canvas {
+  max-width: 100%;
 }
 
 #app {
@@ -309,6 +319,115 @@ pre {
   .grabando {
     animation: none;
   }
+}
+
+/* Huella SHA-256: monoespaciada, cortable y sin comerse la pantalla */
+.huella {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.72rem;
+  line-height: 1.4;
+  color: var(--texto-2);
+  overflow-wrap: anywhere;
+  word-break: break-all;
+}
+
+/* Vista previa mientras se graba */
+.marco-previa {
+  position: relative;
+  margin: 10px 0;
+  border-radius: var(--radio);
+  overflow: hidden;
+  background: #000;
+  aspect-ratio: 4 / 3;
+}
+.previa {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.punto-rec {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  background: var(--alta);
+  color: #2a0000;
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  padding: 3px 8px;
+  border-radius: 999px;
+  animation: latido 1.4s ease-in-out infinite;
+}
+
+/* Medidor de nivel de audio */
+.nivel {
+  height: 10px;
+  border-radius: 999px;
+  background: var(--fondo-3);
+  overflow: hidden;
+  margin: 10px 0;
+}
+.nivel-relleno {
+  height: 100%;
+  width: 0;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--ok), var(--media), var(--alta));
+  transition: width 80ms linear;
+}
+
+/* Cámara a pantalla completa */
+.camara {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  background: #000;
+  display: flex;
+  flex-direction: column;
+}
+.camara-video {
+  flex: 1;
+  width: 100%;
+  min-height: 0;
+  object-fit: contain;
+  background: #000;
+}
+.camara-estado {
+  color: var(--texto);
+  text-align: center;
+  margin: 0;
+  padding: 0 16px;
+  font-size: 0.9rem;
+}
+.camara-barra {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 16px 20px calc(20px + env(safe-area-inset-bottom));
+  background: rgba(0, 0, 0, 0.75);
+}
+.camara-barra > button {
+  flex: 0 0 auto;
+  min-width: 84px;
+}
+button.disparador {
+  /* Redondo de verdad: sin fijar también el min-width, la regla de la barra lo
+     estiraba a 84px y salía un óvalo. */
+  width: 76px;
+  min-width: 76px;
+  height: 76px;
+  min-height: 76px;
+  flex: 0 0 76px;
+  border-radius: 50%;
+  background: #fff;
+  border: 5px solid rgba(255, 255, 255, 0.45);
+  padding: 0;
+}
+
+/* Con una capa a pantalla completa abierta, lo de debajo no debe moverse. */
+body.capa-abierta {
+  overflow: hidden;
 }
 
 /* Aviso de actualización que espera a que termines */
