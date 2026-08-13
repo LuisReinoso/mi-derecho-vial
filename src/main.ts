@@ -10,4 +10,18 @@ if (raiz) montar(raiz)
 // acordarse de encender algo que ya encendió una vez.
 void reanudarSiYaEstaLista()
 
-registerSW({ immediate: true })
+const actualizar = registerSW({
+  immediate: true,
+  onRegisteredSW(_url, registro) {
+    // Buscar actualizaciones al volver a la app. Sin esto, un teléfono que
+    // nunca cierra la pestaña puede quedarse meses con una versión vieja.
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'visible') void registro?.update()
+    })
+  },
+})
+
+/** Fuerza descargar la última versión. Se usa desde Derechos → Ajustes. */
+export async function buscarActualizacion(): Promise<void> {
+  await actualizar(true)
+}

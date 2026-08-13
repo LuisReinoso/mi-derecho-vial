@@ -10,7 +10,7 @@ import {
   olvidarIndice,
 } from '../core/busqueda'
 import type { EstadoSemantico } from '../core/busqueda'
-import { boton, el } from './dom'
+import { avisar, boton, el } from './dom'
 
 interface Denuncia {
   via: string
@@ -113,6 +113,33 @@ function bloqueIa(): HTMLElement {
   return seccion
 }
 
+/**
+ * Qué versión está corriendo y cómo forzar la última. Parece un detalle, pero
+ * un teléfono que se queda con un bundle viejo en caché falla justo cuando más
+ * falta hace, y sin esto no hay forma de saberlo desde la calle.
+ */
+function bloqueVersion(): HTMLElement {
+  const seccion = el('section', { class: 'tarjeta' })
+  seccion.append(
+    el('h3', {}, 'Versión instalada'),
+    el('p', { class: 'sutil' }, `Compilada el ${__VERSION__} (UTC).`),
+    boton(
+      'Buscar actualización',
+      async () => {
+        try {
+          const { buscarActualizacion } = await import('../main')
+          await buscarActualizacion()
+          avisar('Buscando la última versión. Si hay una nueva, la app se recargará sola.')
+        } catch {
+          location.reload()
+        }
+      },
+      'fantasma compacto',
+    ),
+  )
+  return seccion
+}
+
 export function vistaDerechos(): HTMLElement {
   const raiz = el('main')
   raiz.append(el('h1', {}, 'Tus derechos'))
@@ -148,6 +175,7 @@ export function vistaDerechos(): HTMLElement {
 
   raiz.append(el('h2', {}, 'Ajustes'))
   raiz.append(bloqueIa())
+  raiz.append(bloqueVersion())
 
   const sbu = sbuMasReciente()
   raiz.append(el('h2', {}, 'De dónde salen los datos'))

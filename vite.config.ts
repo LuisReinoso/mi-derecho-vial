@@ -5,8 +5,15 @@ import { VitePWA } from 'vite-plugin-pwa'
 // (usuario.github.io/repo/) hay que pasar BASE_PATH=/repo/ al construir.
 const base = process.env.BASE_PATH ?? '/'
 
+// Sello de compilación: permite ver desde el teléfono qué versión está
+// corriendo, que es justo lo que hace falta cuando algo se queda en caché.
+const sello = new Date().toISOString().slice(0, 16).replace('T', ' ')
+
 export default defineConfig({
   base,
+  define: {
+    __VERSION__: JSON.stringify(sello),
+  },
   build: {
     target: 'es2022',
     // Todo el conocimiento legal viaja dentro del bundle: sin red, sin fetch.
@@ -26,6 +33,11 @@ export default defineConfig({
         globIgnores: ['**/transformers*.js'],
         navigateFallback: `${base}index.html`,
         cleanupOutdatedCaches: true,
+        // Que una versión nueva tome el control de inmediato. Quedarse con un
+        // bundle viejo en caché es peor que no tener caché: el código antiguo
+        // se topa con datos nuevos y falla en el peor momento.
+        skipWaiting: true,
+        clientsClaim: true,
         runtimeCaching: [
           {
             // Runtime de ONNX y el chunk de transformers: se guardan la primera
