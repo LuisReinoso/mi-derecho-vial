@@ -1,0 +1,85 @@
+{
+  "meta": {
+    "descripcion": "Entidades de control de tránsito del Ecuador, sus portales de consulta y sus canales de denuncia. Los enlaces se abren solo cuando el usuario los toca: la app nunca consulta nada por su cuenta.",
+    "consultado": "2026-08-13",
+    "advertencia": "Los portales cambian de ruta con frecuencia. Si un enlace da 404, entra por la página principal de la entidad."
+  },
+  "entidades": [
+    {
+      "codigo": "MNO",
+      "nombre": "Mancomunidad de Tránsito del Norte",
+      "gestor": "Empresa Pública de Movilidad del Norte (MOVIDELNOR EP)",
+      "cobertura": "15 cantones de Imbabura, Carchi, Sucumbíos y Esmeraldas",
+      "portal_servicios": "https://movidelnor.gob.ec/web/webepm/portal-de-servicios/",
+      "facilidades_pago": "https://www.movidelnor.gob.ec/web/webepm/facilidades-de-pago/",
+      "pasarela": "Placetopay",
+      "canales_presenciales": ["Banco del Pacífico", "Balcón de Servicios matriz, Av. Eloy Alfaro y Julio Zaldumbide (Ibarra)"],
+      "prefijo_citacion": "MNCEM"
+    },
+    {
+      "codigo": "ANT",
+      "nombre": "Agencia Nacional de Tránsito",
+      "gestor": "ANT",
+      "cobertura": "Nacional (rectoría y cantones sin competencia asumida)",
+      "portal_servicios": "https://www.ant.gob.ec/",
+      "facilidades_pago": null,
+      "pasarela": null,
+      "canales_presenciales": [],
+      "prefijo_citacion": null
+    },
+    {
+      "codigo": "CTE",
+      "nombre": "Comisión de Tránsito del Ecuador",
+      "gestor": "CTE",
+      "cobertura": "Vías estatales y cantones asignados",
+      "portal_servicios": "https://www.comisiontransito.gob.ec/",
+      "facilidades_pago": null,
+      "pasarela": null,
+      "canales_presenciales": [],
+      "prefijo_citacion": null
+    },
+    {
+      "codigo": "AMT",
+      "nombre": "Agencia Metropolitana de Tránsito de Quito",
+      "gestor": "AMT",
+      "cobertura": "Distrito Metropolitano de Quito",
+      "portal_servicios": "https://www.quito.gob.ec/",
+      "facilidades_pago": null,
+      "pasarela": null,
+      "canales_presenciales": [],
+      "prefijo_citacion": null
+    },
+    {
+      "codigo": "ATM",
+      "nombre": "Autoridad de Tránsito Municipal de Guayaquil",
+      "gestor": "ATM",
+      "cobertura": "Cantón Guayaquil",
+      "portal_servicios": "https://www.atm.gob.ec/",
+      "facilidades_pago": null,
+      "pasarela": null,
+      "canales_presenciales": [],
+      "prefijo_citacion": null
+    }
+  ],
+  "denuncias": [
+    {
+      "via": "Fiscalía General del Estado",
+      "cuando": "Cuando un servidor público exige o recibe dinero indebidamente prevaliéndose del cargo. Eso se llama concusión y está tipificado en el Art. 281 del COIP: es un delito, no una falta administrativa.",
+      "url": "https://www.fiscalia.gob.ec/",
+      "que_llevar": ["Grabación de audio o video", "Capturas de las transferencias o mensajes", "Fecha, hora y ubicación exactas", "Número de citación si existe", "Datos del vehículo"]
+    },
+    {
+      "via": "Asuntos Internos de la entidad de control",
+      "cuando": "Faltas disciplinarias del agente. Se procesan bajo los Arts. 119, 120 y 121 del COESCOP.",
+      "url": null,
+      "que_llevar": ["Relato cronológico de lo ocurrido", "Toda la evidencia recolectada", "Número de citación"]
+    },
+    {
+      "via": "Defensoría Pública",
+      "cuando": "Si necesitas patrocinio de abogado y no puedes pagarlo. El patrocinio es gratuito.",
+      "url": "https://www.defensoria.gob.ec/",
+      "que_llevar": ["Copia de la citación", "Tu cédula", "El expediente de evidencia que genera esta app"]
+    }
+  ],
+  "regla_de_oro_pago": "Ningún pago de una multa se hace en efectivo al agente ni por transferencia a una cuenta personal. Siempre es en el portal de la entidad, en el banco autorizado o en la ventanilla oficial. Si te piden dinero de otra forma, eso ya no es una multa."
+}

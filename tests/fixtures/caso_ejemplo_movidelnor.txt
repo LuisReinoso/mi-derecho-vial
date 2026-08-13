@@ -1,0 +1,22 @@
+Consulta de Citaciones
+
+No. Citación: MNCEM-EJEM0125-00001
+Placa: ABC1234
+Documento: VEH - 1700000000
+Fecha de emisión: 06-08-2026 18:26:50
+Tipo: INFRACCIÓN / CITACIÓN
+Observación: NO RESPETAR SEMÁFORO
+Rubro: Art. 389 - Lit. 01 - COND.QUE DESOBEDEZCA ORD.DE AGNT.DE TRANS. Y SENAL.EN GR
+Entidad: MNO - MANCOMUNIDAD DEL NORTE
+Puntos Perdidos: 0
+Agente de Tránsito:
+Lugar: AV EJEMPLO Y CALLE MUESTRA
+Provincia:
+Localidad:
+Zona:
+Distrito:
+Circuito:
+Origen: HANDHELP
+Fecha Límite de Pago: 16-08-2026
+
+Imágenes Relacionada a la Multa

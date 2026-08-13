@@ -1,0 +1,36 @@
+{
+  "meta": {
+    "descripcion": "Feriados nacionales del Ecuador. Se usan para contar días de término (hábiles), que es como la ley cuenta el plazo para impugnar.",
+    "base_legal_traslados": "Ley Reformatoria a la Ley Orgánica del Servicio Público y al Código del Trabajo, Registro Oficial Suplemento 906 de 20 de diciembre de 2016.",
+    "reglas_traslado": [
+      "Si el feriado cae sábado, se traslada al viernes anterior.",
+      "Si cae domingo, se traslada al lunes siguiente.",
+      "Si cae martes, se traslada al lunes anterior.",
+      "Si cae miércoles o jueves, se traslada al viernes de esa misma semana.",
+      "Año Nuevo y Navidad no se trasladan."
+    ],
+    "advertencia_feriados_locales": "Esta lista es solo de feriados nacionales. Los feriados locales (cantonización, fundación de la ciudad) también suspenden términos en esa localidad y NO están aquí. Verifica el calendario de tu cantón antes de dar por vencido un plazo.",
+    "consultado": "2026-08-13"
+  },
+  "anios": {
+    "2026": {
+      "verificado": true,
+      "fuente": "Calendario oficial de feriados nacionales 2026 publicado por el Viceministerio de Turismo, difundido por El Universo y El Comercio (diciembre 2025).",
+      "fuente_url": "https://www.eluniverso.com/noticias/ecuador/feriados-ecuador-2026-calendario-completo-fechas-y-todos-los-puentes-del-ano-nota/",
+      "dias": [
+        { "fecha": "2026-01-01", "nombre": "Año Nuevo" },
+        { "fecha": "2026-01-02", "nombre": "Descanso obligatorio por Año Nuevo", "nota": "Consta en el calendario oficial 2026 como día de descanso junto al 1 de enero." },
+        { "fecha": "2026-02-16", "nombre": "Carnaval (lunes)" },
+        { "fecha": "2026-02-17", "nombre": "Carnaval (martes)" },
+        { "fecha": "2026-04-03", "nombre": "Viernes Santo" },
+        { "fecha": "2026-05-01", "nombre": "Día del Trabajo" },
+        { "fecha": "2026-05-25", "nombre": "Batalla de Pichincha", "nota": "Trasladado desde el domingo 24 de mayo." },
+        { "fecha": "2026-08-10", "nombre": "Primer Grito de Independencia" },
+        { "fecha": "2026-10-09", "nombre": "Independencia de Guayaquil" },
+        { "fecha": "2026-11-02", "nombre": "Día de los Difuntos" },
+        { "fecha": "2026-11-03", "nombre": "Independencia de Cuenca" },
+        { "fecha": "2026-12-25", "nombre": "Navidad" }
+      ]
+    }
+  }
+}

@@ -1,0 +1,178 @@
+/** Pantalla "Derechos": lo que conviene tener claro antes de abrir la boca. */
+import entidadesCrudo from '../data/entidades.json'
+import { FUERA_DE_ALCANCE } from '../core/busqueda'
+import { metaCoip } from '../core/coip'
+import { sbuMasReciente } from '../core/calculadora'
+import {
+  activarSemantica,
+  alCambiarEstado,
+  estadoSemantico,
+  olvidarIndice,
+} from '../core/busqueda'
+import type { EstadoSemantico } from '../core/busqueda'
+import { boton, el } from './dom'
+
+interface Denuncia {
+  via: string
+  cuando: string
+  url: string | null
+  que_llevar: string[]
+}
+
+const datos = entidadesCrudo as unknown as {
+  entidades: { codigo: string; nombre: string; portal_servicios: string | null }[]
+  denuncias: Denuncia[]
+  regla_de_oro_pago: string
+}
+
+const DERECHOS: [string, string][] = [
+  [
+    'Puedes grabar',
+    'Estás en la vía pública y eres parte de la conversación. Grabar tu propio control es la forma más simple de que después no sea tu palabra contra otra. Avisa que estás grabando, con calma.',
+  ],
+  [
+    'Puedes pedir identificación',
+    'Puedes pedir el nombre y el número de placa del servidor que te detiene, y pedir que consten en la boleta. La LOTTTSV detalla los elementos que debe contener el parte.',
+  ],
+  [
+    'El pago nunca es en efectivo ni por transferencia personal',
+    datos.regla_de_oro_pago,
+  ],
+  [
+    'Exigir dinero por el cargo es un delito',
+    'La conducta de exigir o recibir dinero indebidamente prevaliéndose del cargo se llama concusión y está tipificada en el Art. 281 del COIP. No es una falta administrativa menor.',
+  ],
+  [
+    'Una boleta falsa también es delito',
+    'La reforma de 2021 a la LOTTTSV incorporó una disposición expresa: los servidores de control de tránsito que incurran en falsedad, engaño o fraude procesal en los informes a su cargo quedan sujetos a acción penal, además de responsabilidad civil y administrativa.',
+  ],
+  [
+    'Tienes 3 días de término para impugnar',
+    'Son días hábiles y no cuenta el día de la notificación (COIP Art. 644). Es poquísimo tiempo: es la razón principal por la que la gente pierde el derecho a defenderse.',
+  ],
+  [
+    'Puedes pedir copia certificada del expediente',
+    'Es un derecho de la persona sancionada, no requiere abogado ni presencia física, y se puede pedir por correo. Es la mejor forma de saber qué se registró realmente. Vale la pena pedirla incluso si ya pagaste.',
+  ],
+  [
+    'Pagar no cierra todas las puertas',
+    'Pagar sí cierra la impugnación judicial. No impide el reclamo administrativo por error de tipificación ni la denuncia si hubo conducta irregular. Son vías distintas.',
+  ],
+  [
+    'La Defensoría Pública patrocina gratis',
+    'La impugnación requiere patrocinio de abogado. Si no puedes pagarlo, la Defensoría Pública lo hace sin costo.',
+  ],
+]
+
+function bloqueIa(): HTMLElement {
+  const seccion = el('section', { class: 'tarjeta' })
+  const estado = el('p', { class: 'sutil' })
+  const accion = el('div')
+
+  const pintar = (e: EstadoSemantico) => {
+    estado.textContent =
+      e.fase === 'apagado'
+        ? 'Ahora mismo la búsqueda usa solo coincidencia de palabras y sinónimos. Funciona bien y no pesa nada.'
+        : e.fase === 'descargando'
+          ? `Descargando el modelo… ${e.progreso}% (${e.archivo})`
+          : e.fase === 'indexando'
+            ? `Analizando los artículos del COIP en tu teléfono… ${e.hechos}/${e.total}`
+            : e.fase === 'listo'
+              ? `Lista. ${e.numerales} numerales indexados en este dispositivo. Ya funciona sin internet.`
+              : `Error: ${e.mensaje}`
+
+    accion.replaceChildren(
+      e.fase === 'listo'
+        ? boton('Desactivar y liberar espacio', () => void olvidarIndice(), 'fantasma compacto')
+        : e.fase === 'descargando' || e.fase === 'indexando'
+          ? el('p', { class: 'sutil' }, 'No cierres la app hasta que termine.')
+          : boton('Activar búsqueda inteligente', () => void activarSemantica(), 'principal'),
+    )
+  }
+
+  alCambiarEstado(pintar)
+  pintar(estadoSemantico())
+
+  seccion.append(
+    el('h3', {}, 'Búsqueda inteligente (opcional)'),
+    el(
+      'p',
+      {},
+      'Con nervios nadie escribe "circular en sentido contrario a la vía normal de circulación": ' +
+        'escribe "me metí al revés". Esto entiende la intención aunque no coincida ni una palabra.',
+    ),
+    el(
+      'p',
+      { class: 'sutil' },
+      'Descarga un modelo de unos 120 MB una sola vez, con wifi. Después todo corre dentro de tu ' +
+        'teléfono, sin conexión y sin enviar tus búsquedas a ningún servidor.',
+    ),
+    estado,
+    accion,
+  )
+  return seccion
+}
+
+export function vistaDerechos(): HTMLElement {
+  const raiz = el('main')
+  raiz.append(el('h1', {}, 'Tus derechos'))
+
+  raiz.append(el('div', { class: 'aviso rojo' }, datos.regla_de_oro_pago))
+
+  for (const [titulo, texto] of DERECHOS) {
+    const t = el('article', { class: 'tarjeta' })
+    t.append(el('h3', {}, titulo), el('p', {}, texto))
+    raiz.append(t)
+  }
+
+  raiz.append(el('h2', {}, 'Dónde denunciar'))
+  for (const d of datos.denuncias) {
+    const t = el('article', { class: 'tarjeta' })
+    t.append(el('h3', {}, d.via), el('p', {}, d.cuando))
+    const lista = el('ul', { class: 'lista' })
+    for (const q of d.que_llevar) lista.append(el('li', {}, q))
+    t.append(el('p', { class: 'sutil' }, 'Qué llevar:'), lista)
+    if (d.url) {
+      const a = el('a', { class: 'boton fantasma', href: d.url, target: '_blank', rel: 'noopener noreferrer' }, d.url)
+      t.append(a)
+    }
+    raiz.append(t)
+  }
+
+  raiz.append(el('h2', {}, 'Lo que esta app NO cubre'))
+  for (const f of FUERA_DE_ALCANCE) {
+    const t = el('article', { class: 'tarjeta media' })
+    t.append(el('h3', {}, `${f.tema} (${f.referencia})`), el('p', {}, f.mensaje))
+    raiz.append(t)
+  }
+
+  raiz.append(el('h2', {}, 'Ajustes'))
+  raiz.append(bloqueIa())
+
+  const sbu = sbuMasReciente()
+  raiz.append(el('h2', {}, 'De dónde salen los datos'))
+  raiz.append(
+    el(
+      'article',
+      { class: 'tarjeta' },
+      el('p', { class: 'sutil' }, metaCoip.norma),
+      el('p', { class: 'sutil' }, `Consultado el ${metaCoip.consultado}.`),
+      el('p', { class: 'sutil' }, `SBU ${sbu.anio}: $${sbu.sbu.toFixed(2)} — ${sbu.norma}`),
+      el('p', { class: 'sutil' }, metaCoip.nota_puntos),
+      el('p', { class: 'sutil' }, metaCoip.advertencia),
+    ),
+  )
+
+  raiz.append(
+    el(
+      'footer',
+      { class: 'legal' },
+      'Mi Derecho Vial es software libre (MIT). El código y los datos legales están ' +
+        'abiertos para que cualquiera pueda revisarlos y corregirlos. Si encuentras un ' +
+        'porcentaje mal o una fuente desactualizada, ese es exactamente el tipo de error ' +
+        'que hay que reportar.',
+    ),
+  )
+
+  return raiz
+}

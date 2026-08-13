@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Mi Derecho Vial">
+  <rect width="512" height="512" rx="112" fill="#0b1220"/>
+  <path d="M256 76 106 138v138c0 96 62 168 150 198 88-30 150-102 150-198V138L256 76z"
+        fill="none" stroke="#4da3ff" stroke-width="28" stroke-linejoin="round"/>
+  <path d="M256 168v176" stroke="#eef2f9" stroke-width="26" stroke-linecap="round"/>
+  <path d="M186 214h140" stroke="#eef2f9" stroke-width="26" stroke-linecap="round"/>
+  <path d="M186 214l-38 76a42 42 0 0 0 76 0z" fill="none" stroke="#eef2f9" stroke-width="20" stroke-linejoin="round"/>
+  <path d="M326 214l-38 76a42 42 0 0 0 76 0z" fill="none" stroke="#eef2f9" stroke-width="20" stroke-linejoin="round"/>
+  <path d="M212 356h88" stroke="#eef2f9" stroke-width="26" stroke-linecap="round"/>
+</svg>

@@ -1,0 +1,72 @@
+{
+  "meta": {
+    "descripcion": "Puente entre cómo habla la gente (y cómo habla un agente en un control) y el numeral exacto del COIP. Alimenta la búsqueda léxica, que funciona sin descargar nada y responde en milisegundos.",
+    "uso": "Cada entrada apunta a un numeral concreto. `confianza` alta = la frase describe inequívocamente ese numeral; media = puede encajar en más de uno y hay que leer el texto legal.",
+    "consultado": "2026-08-13",
+    "advertencia": "Un mapeo aquí es una orientación, no una calificación jurídica. La tipificación definitiva la hace el juzgador."
+  },
+  "expresiones": [
+    { "articulo": "389", "literal": "1", "confianza": "alta", "frases": ["me pase el rojo", "pasarse el semaforo en rojo", "no respetar el semaforo", "comerse la luz roja", "cruzar en rojo", "luz roja", "semaforo en rojo", "no respetar la senal de pare", "no hacer el pare", "no respetar el ceda el paso", "desobedecer al agente de transito", "no obedecer las senales del agente", "no respetar la senalizacion"] },
+    { "articulo": "389", "literal": "2", "confianza": "alta", "frases": ["rebasar en curva", "adelantar en curva", "rebasar en puente", "adelantar en tunel", "rebasar en linea continua", "adelantar donde no se puede"] },
+    { "articulo": "389", "literal": "5", "confianza": "alta", "frases": ["le falte de palabra al agente", "insultar al agente", "gritarle al agente", "falta de palabra a la autoridad"] },
+    { "articulo": "389", "literal": "6", "confianza": "alta", "frases": ["exceso de velocidad moderado", "ir un poco rapido", "pasarme de velocidad", "rango moderado de velocidad", "radar de velocidad", "fotoradar velocidad"] },
+    { "articulo": "389", "literal": "7", "confianza": "media", "frases": ["vehiculo en malas condiciones mecanicas", "no pasar la revision tecnica", "condiciones tecnico mecanicas"] },
+    { "articulo": "389", "literal": "11", "confianza": "alta", "frases": ["sin casco", "no usar casco", "casco de moto", "moto sin casco", "acompanante sin casco"] },
+    { "articulo": "389", "literal": "12", "confianza": "alta", "frases": ["sin placas", "placa tapada", "placa oculta", "placa alterada", "circular sin placa"] },
+    { "articulo": "390", "literal": "3", "confianza": "alta", "frases": ["contravia", "ir en contravia", "sentido contrario", "entrar en sentido contrario", "vía en sentido contrario", "me meti en contravia", "entre a la calle al reves", "circular en contravia"] },
+    { "articulo": "390", "literal": "6", "confianza": "alta", "frases": ["no dar paso a la ambulancia", "no ceder el paso a bomberos", "no dejar pasar vehiculo de emergencia", "sirena de emergencia"] },
+    { "articulo": "390", "literal": "7", "confianza": "media", "frases": ["parar donde no se debe", "detenerse para dejar pasajeros", "recoger pasajeros en lugar no permitido"] },
+    { "articulo": "390", "literal": "8", "confianza": "media", "frases": ["dejar el carro abandonado", "estacionar sin precauciones", "vehiculo abandonado en la via"] },
+    { "articulo": "390", "literal": "11", "confianza": "alta", "frases": ["cambio brusco de carril", "cambiarme de carril de golpe", "cerrarle a otro carro", "cambio indebido de carril"] },
+    { "articulo": "390", "literal": "13", "confianza": "media", "frases": ["llevar al nino en brazos", "llevar mascota en brazos", "llevar cosas en los brazos manejando"] },
+    { "articulo": "390", "literal": "14", "confianza": "media", "frases": ["sin luces", "luces en mal estado", "no poner la direccional", "no usar direccionales"] },
+    { "articulo": "390", "literal": "18", "confianza": "alta", "frases": ["no respetar al ciclista", "derecho preferente del ciclista"] },
+    { "articulo": "390", "literal": "19", "confianza": "alta", "frases": ["invadir la ciclovia", "estacionar en la ciclovia", "circular por la ciclovia"] },
+    { "articulo": "390", "literal": "22", "confianza": "alta", "frases": ["dejar al nino solo en el carro", "ninos solos en el vehiculo"] },
+    { "articulo": "391", "literal": "1", "confianza": "alta", "frases": ["emanacion de gases", "carro que humea", "contaminacion del vehiculo", "humo negro"] },
+    { "articulo": "391", "literal": "2", "confianza": "media", "frases": ["no ir por la derecha", "no conducir por la derecha en doble via"] },
+    { "articulo": "391", "literal": "3", "confianza": "alta", "frases": ["invadir el carril del bus", "carril exclusivo de bus", "meterme al carril del trole", "via exclusiva brt"] },
+    { "articulo": "391", "literal": "4", "confianza": "alta", "frases": ["sin botiquin", "sin extintor", "extintor vencido", "no llevar botiquin"] },
+    { "articulo": "391", "literal": "5", "confianza": "alta", "frases": ["mal estacionado", "estacionar en sitio prohibido", "estacionar en espacio de discapacitados", "tapar una rampa", "estacionar en la vereda", "obstaculizar garaje"] },
+    { "articulo": "391", "literal": "7", "confianza": "alta", "frases": ["nino sin silla", "sin silla de bebe", "transportar ninos sin seguridad"] },
+    { "articulo": "391", "literal": "9", "confianza": "alta", "frases": ["balizas sin autorizacion", "sirenas en carro particular"] },
+    { "articulo": "391", "literal": "10", "confianza": "alta", "frases": ["sin triangulos de seguridad", "no poner los triangulos"] },
+    { "articulo": "391", "literal": "11", "confianza": "alta", "frases": ["vidrios polarizados", "polarizado oscuro", "papel polarizado", "laminas antisolares"] },
+    { "articulo": "391", "literal": "12", "confianza": "alta", "frases": ["hablando por celular", "usar el celular manejando", "celular al volante", "chateando manejando", "sin manos libres"] },
+    { "articulo": "391", "literal": "14", "confianza": "alta", "frases": ["manejar sin luces en la noche", "luces apagadas de noche", "tunel con luces apagadas"] },
+    { "articulo": "391", "literal": "20", "confianza": "media", "frases": ["camion en zona restringida", "vehiculo pesado en horario prohibido"] },
+    { "articulo": "391", "literal": "21", "confianza": "alta", "frases": ["sin portar la licencia", "olvide la licencia", "no tengo la licencia encima", "no portar licencia"] },
+    { "articulo": "392", "literal": "1", "confianza": "alta", "frases": ["uso de la bocina", "pitar mucho", "bocinazo", "ruido con la bocina"] },
+    { "articulo": "392", "literal": "5", "confianza": "alta", "frases": ["no guardar distancia", "ir muy pegado", "distancia de seguimiento"] },
+    { "articulo": "392", "literal": "6", "confianza": "alta", "frases": ["sin cinturon", "no usar cinturon de seguridad", "cinturon de seguridad"] },
+    { "articulo": "392", "literal": "10", "confianza": "alta", "frases": ["botar basura por la ventana", "arrojar desechos desde el carro"] },
+    { "articulo": "392", "literal": "12", "confianza": "media", "frases": ["ciclista por donde no debe", "moto por la vereda", "motociclista en sitio no permitido"] },
+    { "articulo": "392", "literal": "13", "confianza": "alta", "frases": ["no hacer el traspaso", "traspaso de dominio", "no cambiar el nombre del carro", "compraventa sin registrar"] },
+    { "articulo": "392", "literal": "15", "confianza": "media", "frases": ["neblineros prohibidos", "luces instaladas sin autorizacion", "faros extras"] },
+    { "articulo": "388", "literal": "1", "confianza": "alta", "frases": ["estacionar en curva", "parar en un puente", "estacionar en zona de seguridad", "detenerse en sitio peligroso", "estacionar en pendiente"] },
+    { "articulo": "388", "literal": "7", "confianza": "alta", "frases": ["gente en el balde de la camioneta", "personas colgadas del carro", "pasajeros en los estribos"] },
+    { "articulo": "387", "literal": "1", "confianza": "alta", "frases": ["choque solo daños materiales", "accidente sin heridos", "rayon a otro carro", "choque leve"] },
+    { "articulo": "387", "literal": "2", "confianza": "alta", "frases": ["licencia caducada", "licencia vencida", "licencia suspendida", "licencia anulada"] },
+    { "articulo": "387", "literal": "5", "confianza": "media", "frases": ["exceso de pasajeros", "sobrecupo", "exceso de carga"] },
+    { "articulo": "386", "literal": "1", "confianza": "alta", "frases": ["sin licencia", "nunca saque licencia", "conducir sin licencia", "no tengo licencia"] },
+    { "articulo": "386", "literal": "2", "confianza": "alta", "frases": ["agredir al agente", "empujar al agente", "falta de obra a la autoridad"] },
+    { "articulo": "386", "literal": "3", "confianza": "alta", "frases": ["exceso de velocidad grave", "velocidad fuera del rango moderado", "ir muchisimo mas rapido"] }
+  ],
+  "fuera_de_alcance": [
+    {
+      "tema": "Conducir en estado de embriaguez o bajo efecto de sustancias",
+      "referencia": "COIP Art. 385",
+      "mensaje": "Esta app cubre las contravenciones de los Arts. 386 a 392. El Art. 385 (alcohol y sustancias) tiene su propia escala de sanciones, incluye privación de libertad y NO está en esta base de datos. No uses esta app para calcular esa multa."
+    },
+    {
+      "tema": "Accidentes con heridos o muertos",
+      "referencia": "COIP Arts. 376 a 380",
+      "mensaje": "Son delitos, no contravenciones. Si hay personas lesionadas o fallecidas, esto excede por completo el alcance de esta app: pide un abogado de inmediato."
+    },
+    {
+      "tema": "Multas por ordenanza municipal",
+      "referencia": "Ordenanzas de cada GAD",
+      "mensaje": "No todas las multas son del COIP. Las de ordenanza municipal (por ejemplo zona azul o pico y placa en algunos cantones) tienen sus propios montos y NO aplican el descuento por pronto pago del COIP."
+    }
+  ]
+}

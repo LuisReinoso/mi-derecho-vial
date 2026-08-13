@@ -1,0 +1,320 @@
+/* Mobile primero, contraste alto y objetivos grandes: esto se usa de pie,
+   en la calle, con una mano y con nervios. */
+
+:root {
+  --fondo: #0b1220;
+  --fondo-2: #131c2e;
+  --fondo-3: #1b2740;
+  --borde: #2a3a5c;
+  --texto: #eef2f9;
+  --texto-2: #a5b3cc;
+  --acento: #4da3ff;
+  --alta: #ff5c5c;
+  --media: #ffb340;
+  --ok: #45d483;
+  --radio: 14px;
+  --nav: 68px;
+}
+
+* {
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  background: var(--fondo);
+  color: var(--texto);
+  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  font-size: 17px;
+  line-height: 1.5;
+  overscroll-behavior-y: none;
+}
+
+#app {
+  min-height: 100dvh;
+  padding-bottom: calc(var(--nav) + env(safe-area-inset-bottom));
+}
+
+main {
+  padding: 16px 16px 32px;
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+h1 {
+  font-size: 1.35rem;
+  margin: 8px 0 4px;
+}
+h2 {
+  font-size: 1.1rem;
+  margin: 24px 0 8px;
+}
+h3 {
+  font-size: 0.95rem;
+  margin: 0 0 4px;
+}
+p {
+  margin: 8px 0;
+}
+
+.sutil {
+  color: var(--texto-2);
+  font-size: 0.9rem;
+}
+
+.tarjeta {
+  background: var(--fondo-2);
+  border: 1px solid var(--borde);
+  border-radius: var(--radio);
+  padding: 14px;
+  margin: 12px 0;
+}
+
+.tarjeta.alta {
+  border-left: 5px solid var(--alta);
+}
+.tarjeta.media {
+  border-left: 5px solid var(--media);
+}
+.tarjeta.baja,
+.tarjeta.informativa {
+  border-left: 5px solid var(--acento);
+}
+
+button,
+.boton {
+  font: inherit;
+  font-weight: 600;
+  color: var(--texto);
+  background: var(--fondo-3);
+  border: 1px solid var(--borde);
+  border-radius: var(--radio);
+  padding: 14px 16px;
+  min-height: 52px;
+  width: 100%;
+  cursor: pointer;
+  display: block;
+  text-align: center;
+  text-decoration: none;
+}
+
+button:active {
+  transform: scale(0.99);
+}
+
+button.principal {
+  background: var(--acento);
+  border-color: var(--acento);
+  color: #04101f;
+}
+
+button.peligro {
+  background: var(--alta);
+  border-color: var(--alta);
+  color: #2a0000;
+  font-size: 1.15rem;
+  min-height: 72px;
+}
+
+button.fantasma {
+  background: transparent;
+}
+
+button.compacto {
+  min-height: 42px;
+  padding: 8px 12px;
+  font-size: 0.9rem;
+  width: auto;
+  display: inline-block;
+}
+
+.fila {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.fila > * {
+  flex: 1 1 140px;
+}
+
+textarea,
+input[type='text'],
+input[type='search'] {
+  font: inherit;
+  width: 100%;
+  background: var(--fondo-2);
+  color: var(--texto);
+  border: 1px solid var(--borde);
+  border-radius: var(--radio);
+  padding: 14px;
+  min-height: 52px;
+}
+
+textarea {
+  min-height: 180px;
+  resize: vertical;
+}
+
+input:focus,
+textarea:focus,
+button:focus-visible {
+  outline: 3px solid var(--acento);
+  outline-offset: 2px;
+}
+
+label {
+  display: block;
+  font-size: 0.9rem;
+  color: var(--texto-2);
+  margin: 14px 0 6px;
+}
+
+.monto {
+  font-size: 2rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.etiqueta {
+  display: inline-block;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  padding: 3px 8px;
+  border-radius: 999px;
+  background: var(--fondo-3);
+  color: var(--texto-2);
+  margin-right: 6px;
+}
+.etiqueta.alta {
+  background: var(--alta);
+  color: #2a0000;
+}
+.etiqueta.media {
+  background: var(--media);
+  color: #2a1a00;
+}
+.etiqueta.ok {
+  background: var(--ok);
+  color: #00250f;
+}
+
+.aviso {
+  background: #2a1a00;
+  border: 1px solid var(--media);
+  border-radius: var(--radio);
+  padding: 12px;
+  margin: 12px 0;
+  font-size: 0.92rem;
+}
+
+.aviso.rojo {
+  background: #2a0b0b;
+  border-color: var(--alta);
+}
+
+nav.inferior {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: calc(var(--nav) + env(safe-area-inset-bottom));
+  padding-bottom: env(safe-area-inset-bottom);
+  display: flex;
+  background: var(--fondo-2);
+  border-top: 1px solid var(--borde);
+  z-index: 10;
+}
+
+nav.inferior button {
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--texto-2);
+  padding: 8px 2px;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+}
+
+nav.inferior button[aria-current='page'] {
+  color: var(--acento);
+}
+
+nav.inferior .icono {
+  font-size: 1.3rem;
+  line-height: 1;
+}
+
+ul.lista {
+  list-style: none;
+  padding: 0;
+  margin: 8px 0;
+}
+ul.lista li {
+  padding: 10px 0;
+  border-bottom: 1px solid var(--borde);
+}
+ul.lista li:last-child {
+  border-bottom: 0;
+}
+
+details {
+  margin: 8px 0;
+}
+summary {
+  cursor: pointer;
+  color: var(--acento);
+  font-size: 0.9rem;
+  padding: 6px 0;
+}
+
+pre {
+  white-space: pre-wrap;
+  word-break: break-word;
+  background: var(--fondo);
+  border: 1px solid var(--borde);
+  border-radius: 10px;
+  padding: 12px;
+  font-size: 0.8rem;
+  color: var(--texto-2);
+  max-height: 320px;
+  overflow: auto;
+}
+
+.grabando {
+  animation: latido 1.4s ease-in-out infinite;
+}
+
+@keyframes latido {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.55;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .grabando {
+    animation: none;
+  }
+}
+
+footer.legal {
+  margin-top: 28px;
+  padding-top: 16px;
+  border-top: 1px solid var(--borde);
+  color: var(--texto-2);
+  font-size: 0.8rem;
+}

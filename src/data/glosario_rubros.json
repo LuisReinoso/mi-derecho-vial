@@ -1,0 +1,26 @@
+{
+  "meta": {
+    "descripcion": "Los portales de consulta abrevian el rubro de la citación de forma agresiva (mayúsculas, sin tildes, cortado a la mitad). Aquí se traduce ese texto al numeral del COIP.",
+    "como_crecer": "Cada citación nueva que se analiza puede aportar un rubro no visto. Si el parser encuentra un rubro desconocido pero el texto trae `Art. NNN - Lit. NN`, el número manda y el texto solo sirve de pista.",
+    "consultado": "2026-08-13"
+  },
+  "rubros": [
+    {
+      "texto_portal": "COND.QUE DESOBEDEZCA ORD.DE AGNT.DE TRANS. Y SENAL.EN GR",
+      "articulo": "389",
+      "literal": "1",
+      "entidad": "MNO",
+      "visto_en": "citación real de Movidelnor, agosto 2026 (identificadores omitidos)",
+      "nota": "Rubro genérico de cuarta clase: cubre desde desobedecer al agente hasta cualquier señalización de la vía."
+    },
+    { "texto_portal": "CONDUCIR EN SENTIDO CONTRARIO A LA VIA NORMAL DE CIRCULACION", "articulo": "390", "literal": "3", "entidad": null, "visto_en": null },
+    { "texto_portal": "NO RESPETAR LA SENALIZACION", "articulo": "389", "literal": "1", "entidad": null, "visto_en": null },
+    { "texto_portal": "EXCESO DE VELOCIDAD RANGO MODERADO", "articulo": "389", "literal": "6", "entidad": null, "visto_en": null },
+    { "texto_portal": "CONDUCIR SIN PORTAR LICENCIA", "articulo": "391", "literal": "21", "entidad": null, "visto_en": null },
+    { "texto_portal": "USO DEL CELULAR AL CONDUCIR", "articulo": "391", "literal": "12", "entidad": null, "visto_en": null },
+    { "texto_portal": "ESTACIONAR EN SITIOS PROHIBIDOS", "articulo": "391", "literal": "5", "entidad": null, "visto_en": null },
+    { "texto_portal": "NO USAR CINTURON DE SEGURIDAD", "articulo": "392", "literal": "6", "entidad": null, "visto_en": null },
+    { "texto_portal": "CONDUCIR CON LICENCIA CADUCADA", "articulo": "387", "literal": "2", "entidad": null, "visto_en": null },
+    { "texto_portal": "VIDRIOS POLARIZADOS NO AUTORIZADOS", "articulo": "391", "literal": "11", "entidad": null, "visto_en": null }
+  ]
+}

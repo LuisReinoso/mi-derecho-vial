@@ -1,0 +1,22 @@
+{
+  "meta": {
+    "descripcion": "Salario Básico Unificado del trabajador en general (Ecuador). Todas las multas del COIP se expresan como porcentaje de este valor, por eso aquí no hay montos de multa: se calculan.",
+    "consultado": "2026-08-13",
+    "como_actualizar": "El Ministerio del Trabajo fija el SBU en diciembre para el año siguiente, mediante Acuerdo Ministerial publicado en el Registro Oficial. Agregar una entrada nueva con su acuerdo y fuente."
+  },
+  "valores": [
+    {
+      "anio": 2026,
+      "sbu": 482.0,
+      "norma": "Acuerdo Ministerial MDT-2025-195, de 15 de diciembre de 2025",
+      "publicacion": "Registro Oficial, Suplemento No. 187, de 18 de diciembre de 2025",
+      "vigencia_desde": "2026-01-01",
+      "fuente": "https://www.eluniverso.com/noticias/informes/salario-basico-unificado-2026-en-ecuador-que-significa-para-tu-sueldo-y-tus-beneficios-nota/",
+      "verificar": false
+    },
+    { "anio": 2025, "sbu": 470.0, "norma": "Acuerdo Ministerial del Ministerio del Trabajo para 2025", "publicacion": null, "vigencia_desde": "2025-01-01", "fuente": "https://www.eluniverso.com/noticias/informes/salario-basico-unificado-2026-en-ecuador-que-significa-para-tu-sueldo-y-tus-beneficios-nota/", "verificar": false },
+    { "anio": 2024, "sbu": 460.0, "norma": "Acuerdo Ministerial del Ministerio del Trabajo para 2024", "publicacion": null, "vigencia_desde": "2024-01-01", "fuente": null, "verificar": true },
+    { "anio": 2023, "sbu": 450.0, "norma": "Acuerdo Ministerial del Ministerio del Trabajo para 2023", "publicacion": null, "vigencia_desde": "2023-01-01", "fuente": null, "verificar": true },
+    { "anio": 2022, "sbu": 425.0, "norma": "Acuerdo Ministerial del Ministerio del Trabajo para 2022", "publicacion": null, "vigencia_desde": "2022-01-01", "fuente": null, "verificar": true }
+  ]
+}
