@@ -9,27 +9,13 @@
  */
 import { buscarNumeral, esAmbiguo, numeralesDeArticulo, clave } from './coip'
 import { buscarRapido } from './busqueda'
+import { elementosDe } from './elementos'
 import { calcularMulta, diferenciaEntre, formatearPorcentaje, formatearUsd, sbuDelAnio, sbuMasReciente } from './calculadora'
 import type { SbuAplicado } from './calculadora'
 import { aISO, plazoCaducidadNotificacion, plazoImpugnacion, plazoProntoPago, PLAZOS, soloFecha } from './plazos'
 import type { Citacion, Hallazgo, Numeral, RelatoUsuario, ResultadoAnalisis } from './tipos'
 
 const CLASES_SIN_PUNTOS = new Set(['tercera', 'cuarta', 'quinta', 'sexta', 'séptima'])
-
-const ELEMENTOS_VERIFICABLES: [RegExp, string][] = [
-  [/sem[aá]foro/i, 'un semáforo'],
-  [/\bpare\b/i, 'una señal de PARE'],
-  [/ceda el paso/i, 'una señal de CEDA EL PASO'],
-  [/se[ñn]alizaci[oó]n|se[ñn]ales/i, 'la señalización invocada'],
-  [/ciclov[ií]a/i, 'una ciclovía demarcada'],
-  [/l[ií]nea f[eé]rrea/i, 'un cruce de línea férrea'],
-  [/v[ií]as exclusivas|carril exclusivo/i, 'la demarcación del carril exclusivo'],
-  [/sentido contrario/i, 'la señalización de sentido único, clara y visible'],
-]
-
-function elementosDe(numeral: Numeral): string[] {
-  return ELEMENTOS_VERIFICABLES.filter(([p]) => p.test(numeral.conducta)).map(([, n]) => n)
-}
 
 function sbuParaCitacion(citacion: Citacion): SbuAplicado {
   const anio = citacion.fechaEmision?.getUTCFullYear()

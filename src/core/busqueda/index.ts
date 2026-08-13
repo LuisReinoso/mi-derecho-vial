@@ -8,6 +8,7 @@
  */
 import { CORPUS, buscarLexico, coincidenciaDirecta } from './lexico'
 import { buscarSemantico, estadoSemantico } from './semantica'
+import { referenciaDesdeConsulta, pareceSoloReferencia } from './referencia'
 import { clave } from '../coip'
 import type { Numeral } from '../tipos'
 
@@ -19,15 +20,38 @@ export interface Resultado {
   numeral: Numeral
   puntaje: number
   /** De dónde salió: útil para no vender magia y para depurar. */
-  origen: ('frase-exacta' | 'lexico' | 'semantico')[]
+  origen: ('referencia' | 'frase-exacta' | 'lexico' | 'semantico')[]
   frases: string[]
 }
 
 const K_RRF = 60
 
+/**
+ * Cuando la consulta trae un número de artículo, ese número manda. Es el caso
+ * de "el agente me está mostrando la pantalla y dice Art. 389 Lit. 01": ahí no
+ * se adivina, se busca exactamente eso.
+ */
+function porReferencia(consulta: string, limite: number): Resultado[] | null {
+  const ref = referenciaDesdeConsulta(consulta)
+  if (!ref) return null
+  // Con lenguaje natural alrededor solo se confía en el número si además trae
+  // el literal; si no, el texto puede ser más informativo que el artículo suelto.
+  if (ref.incompleta && !pareceSoloReferencia(consulta)) return null
+
+  return ref.numerales.slice(0, ref.incompleta ? limite : 1).map((numeral) => ({
+    numeral,
+    puntaje: Infinity,
+    origen: ['referencia'] as Resultado['origen'],
+    frases: CORPUS.find((d) => clave(d.numeral) === clave(numeral))?.frases ?? [],
+  }))
+}
+
 export async function buscar(consulta: string, limite = 6): Promise<Resultado[]> {
   const texto = consulta.trim()
   if (texto.length < 2) return []
+
+  const directo = porReferencia(texto, limite)
+  if (directo) return directo
 
   const acumulado = new Map<string, Resultado>()
 
@@ -62,6 +86,9 @@ export async function buscar(consulta: string, limite = 6): Promise<Resultado[]>
 
 /** Versión sincrónica, solo léxica. Para cuando no se puede esperar un await. */
 export function buscarRapido(consulta: string, limite = 6): Resultado[] {
+  const directo = porReferencia(consulta.trim(), limite)
+  if (directo) return directo
+
   const directa = coincidenciaDirecta(consulta)
   const lexicos = buscarLexico(consulta, limite)
   const salida: Resultado[] = []
