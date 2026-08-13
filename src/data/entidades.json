@@ -11,10 +11,17 @@
       "gestor": "Empresa Pública de Movilidad del Norte (MOVIDELNOR EP)",
       "cobertura": "15 cantones de Imbabura, Carchi, Sucumbíos y Esmeraldas",
       "portal_servicios": "https://movidelnor.gob.ec/web/webepm/portal-de-servicios/",
-      "facilidades_pago": "https://www.movidelnor.gob.ec/web/webepm/facilidades-de-pago/",
-      "pasarela": "Placetopay",
-      "canales_presenciales": ["Banco del Pacífico", "Balcón de Servicios matriz, Av. Eloy Alfaro y Julio Zaldumbide (Ibarra)"],
-      "prefijo_citacion": "MNCEM"
+      "facilidades_pago": "https://movidelnor.gob.ec/web/webepm/facilidades-de-pago/",
+      "consulta_citaciones": "https://servicios.axiscloud.ec/AutoServicio/inicio.jsp?ps_empresa=02&ps_accion=P55",
+      "generador_pago": "https://servicios.axiscloud.ec/SVT/paginas/portal/svf_solicitar_servicio.jsp?ps_param_tip_serv=CEW&ps_id_empresa=02",
+      "acceso": "Se entra solo con el número de identificación. El sistema envía un código de verificación al celular y al correo REGISTRADOS, y ese código caduca en 4 minutos. Si tus datos no están al día, en la misma pantalla hay una pestaña de Actualización de Datos.",
+      "pago_en_linea": "Tarjeta de crédito desde el portal.",
+      "pago_presencial": "Con tarjeta de otros bancos, en oficinas mediante DataFast, con opción de pago diferido a plazos.",
+      "direccion_matriz": "Vicente Rocafuerte 1-43 y Mariano Peñaherrera (Ibarra)",
+      "telefonos": ["(+593) 062 608 497", "(+593) 062 952 894", "(+593) 062 952 019", "Matriculación: (+593) 062 510 770", "Coactivas: (+593) 062 511 972"],
+      "correo": "buzon@movidelnor.gob.ec",
+      "prefijo_citacion": "MNCEM",
+      "verificado": "2026-08-13"
     },
     {
       "codigo": "ANT",

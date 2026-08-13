@@ -19,10 +19,69 @@ interface Denuncia {
   que_llevar: string[]
 }
 
+interface Entidad {
+  codigo: string
+  nombre: string
+  gestor: string
+  cobertura: string
+  portal_servicios: string | null
+  consulta_citaciones?: string
+  acceso?: string
+  pago_en_linea?: string
+  pago_presencial?: string
+  direccion_matriz?: string
+  telefonos?: string[]
+  correo?: string
+  verificado?: string
+}
+
 const datos = entidadesCrudo as unknown as {
-  entidades: { codigo: string; nombre: string; portal_servicios: string | null }[]
+  entidades: Entidad[]
   denuncias: Denuncia[]
   regla_de_oro_pago: string
+}
+
+/** Dónde se paga de verdad, con los enlaces comprobados de cada entidad. */
+function bloqueEntidad(e: Entidad): HTMLElement {
+  const t = el('article', { class: 'tarjeta' })
+  t.append(
+    el('h3', {}, e.nombre),
+    el('p', { class: 'sutil' }, `${e.gestor} · ${e.cobertura}`),
+  )
+
+  if (e.consulta_citaciones) {
+    t.append(
+      el(
+        'a',
+        { class: 'boton principal', href: e.consulta_citaciones, target: '_blank', rel: 'noopener noreferrer' },
+        'Consultar y pagar mi citación',
+      ),
+    )
+  } else if (e.portal_servicios) {
+    t.append(
+      el(
+        'a',
+        { class: 'boton fantasma', href: e.portal_servicios, target: '_blank', rel: 'noopener noreferrer' },
+        'Portal de la entidad',
+      ),
+    )
+  }
+
+  if (e.acceso) t.append(el('p', { class: 'sutil' }, e.acceso))
+  if (e.pago_en_linea) t.append(el('p', {}, `En línea: ${e.pago_en_linea}`))
+  if (e.pago_presencial) t.append(el('p', {}, `Presencial: ${e.pago_presencial}`))
+  if (e.direccion_matriz) t.append(el('p', { class: 'sutil' }, `Matriz: ${e.direccion_matriz}`))
+
+  if (e.telefonos?.length) {
+    const lista = el('ul', { class: 'lista' })
+    for (const tel of e.telefonos) lista.append(el('li', {}, tel))
+    t.append(lista)
+  }
+  if (e.correo) t.append(el('p', { class: 'sutil' }, e.correo))
+  if (e.verificado) {
+    t.append(el('p', { class: 'sutil' }, `Enlaces comprobados el ${e.verificado}.`))
+  }
+  return t
 }
 
 const DERECHOS: [string, string][] = [
@@ -153,6 +212,19 @@ export function vistaDerechos(): HTMLElement {
     t.append(el('h3', {}, titulo), el('p', {}, texto))
     raiz.append(t)
   }
+
+  raiz.append(el('h2', {}, 'Dónde pagar'))
+  raiz.append(
+    el(
+      'p',
+      { class: 'sutil' },
+      'Pagar cierra la vía de impugnación, pero no el reclamo administrativo por error de ' +
+        'tipificación ni la denuncia si hubo conducta irregular. Antes de pagar, comprueba que el ' +
+        'monto sea el porcentaje del SBU que fija el artículo: si es mayor, pregunta qué son esos ' +
+        'valores de más.',
+    ),
+  )
+  for (const e of datos.entidades) raiz.append(bloqueEntidad(e))
 
   raiz.append(el('h2', {}, 'Dónde denunciar'))
   for (const d of datos.denuncias) {
