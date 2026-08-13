@@ -13,7 +13,7 @@
     { "articulo": "389", "literal": "7", "confianza": "media", "frases": ["vehiculo en malas condiciones mecanicas", "no pasar la revision tecnica", "condiciones tecnico mecanicas"] },
     { "articulo": "389", "literal": "11", "confianza": "alta", "frases": ["sin casco", "no usar casco", "casco de moto", "moto sin casco", "acompanante sin casco"] },
     { "articulo": "389", "literal": "12", "confianza": "alta", "frases": ["sin placas", "placa tapada", "placa oculta", "placa alterada", "circular sin placa"] },
-    { "articulo": "390", "literal": "3", "confianza": "alta", "frases": ["contravia", "ir en contravia", "sentido contrario", "entrar en sentido contrario", "vía en sentido contrario", "me meti en contravia", "entre a la calle al reves", "circular en contravia"] },
+    { "articulo": "390", "literal": "3", "confianza": "alta", "frases": ["contravia", "contra via", "en contra via", "ir en contravia", "me pase en contra via", "me fui en contra via", "sentido contrario", "entrar en sentido contrario", "via en sentido contrario", "me meti en contravia", "entre a la calle al reves", "me meti al reves", "circular en contravia", "tome la calle al reves", "iba en contravia"] },
     { "articulo": "390", "literal": "6", "confianza": "alta", "frases": ["no dar paso a la ambulancia", "no ceder el paso a bomberos", "no dejar pasar vehiculo de emergencia", "sirena de emergencia"] },
     { "articulo": "390", "literal": "7", "confianza": "media", "frases": ["parar donde no se debe", "detenerse para dejar pasajeros", "recoger pasajeros en lugar no permitido"] },
     { "articulo": "390", "literal": "8", "confianza": "media", "frases": ["dejar el carro abandonado", "estacionar sin precauciones", "vehiculo abandonado en la via"] },

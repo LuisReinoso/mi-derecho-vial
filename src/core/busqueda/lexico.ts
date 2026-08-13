@@ -8,7 +8,7 @@
  */
 import sinonimosCrudo from '../../data/sinonimos_calle.json'
 import { NUMERALES, clave } from '../coip'
-import { tokens } from '../texto'
+import { expandir, normalizar, pegado, tokens } from '../texto'
 import type { Numeral } from '../tipos'
 
 interface ExpresionCruda {
@@ -114,22 +114,42 @@ export function buscarLexico(consulta: string, limite = 8): Coincidencia[] {
 }
 
 /**
- * Coincidencia exacta con una frase de calle. Cuando alguien escribe
- * "contravía", no hace falta ranking: hay una respuesta directa.
+ * Coincidencia con una frase de calle. Cuando alguien escribe "contravía" no
+ * hace falta ranking: hay una respuesta directa.
+ *
+ * Se compara sin espacios a propósito. "contra vía", "contravía" y "contra
+ * via" son la misma cosa para quien las escribe con prisa, y tratarlas como
+ * cosas distintas mandaba la consulta al artículo equivocado.
+ *
+ * Cuando encajan varias frases gana la más larga, que es la más específica:
+ * "sin licencia" debe pesar más que "licencia".
  */
 export function coincidenciaDirecta(consulta: string): Coincidencia | null {
-  const c = tokens(consulta).join(' ')
-  if (!c) return null
+  const q = pegado(expandir(normalizar(consulta)))
+  if (q.length < 4) return null
+
+  let mejor: { doc: Documento; largo: number; frase: string } | null = null
+
   for (const doc of CORPUS) {
     for (const frase of doc.frases) {
-      const f = tokens(frase).join(' ')
-      if (!f) continue
-      if (f === c || (c.length > 4 && (c.includes(f) || f.includes(c)))) {
-        return { numeral: doc.numeral, puntaje: Infinity, terminos: [c], frases: doc.frases }
-      }
+      const f = pegado(expandir(normalizar(frase)))
+      if (f.length < 6) continue
+      // La consulta contiene la frase, o la frase contiene lo que se lleva
+      // escrito (para que funcione mientras se teclea).
+      const encaja = q.includes(f) || (q.length >= 6 && f.includes(q))
+      if (!encaja) continue
+      const largo = Math.min(f.length, q.length)
+      if (!mejor || largo > mejor.largo) mejor = { doc, largo, frase }
     }
   }
-  return null
+
+  if (!mejor) return null
+  return {
+    numeral: mejor.doc.numeral,
+    puntaje: Infinity,
+    terminos: [mejor.frase],
+    frases: mejor.doc.frases,
+  }
 }
 
 /** Avisa cuando la consulta cae fuera de lo que esta base cubre. */
