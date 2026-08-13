@@ -34,7 +34,11 @@ export default defineConfig({
         globPatterns: ['**/*.{js,css,html,svg,png,ico,webmanifest}'],
         // La app base tiene que instalarse en segundos con mala señal. El motor
         // de IA no se precachea: solo lo descarga quien lo activa a propósito.
-        globIgnores: ['**/transformers*.js'],
+        globIgnores: ['**/transformers*.js', '**/sw-transicion.js'],
+        // Se ejecuta dentro del service worker. Es lo único capaz de rescatar
+        // a un teléfono que tiene instalada una versión que no sabe activar la
+        // siguiente. Ver public/sw-transicion.js.
+        importScripts: ['sw-transicion.js'],
         navigateFallback: `${base}index.html`,
         cleanupOutdatedCaches: true,
         // skipWaiting a false a propósito: el service worker nuevo espera a que

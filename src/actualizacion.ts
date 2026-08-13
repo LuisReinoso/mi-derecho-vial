@@ -78,8 +78,35 @@ function comprobar(): void {
   void registro?.update().catch(() => undefined)
 }
 
+/**
+ * Le contesta al service worker que aquí hay código que sabe gestionar la
+ * actualización, para que no fuerce la recarga por su cuenta y respete que
+ * puedas estar grabando. Si esto no contesta, el service worker asume que la
+ * pantalla es de una versión vieja y toma el control él.
+ */
+function anunciarQueSabemosActualizar(): void {
+  try {
+    const canal = new BroadcastChannel('mdv-version')
+    canal.onmessage = (e) => {
+      if (e.data === 'hay-alguien-ahi') canal.postMessage('se-gestionar-actualizaciones')
+    }
+  } catch {
+    // Sin BroadcastChannel el service worker recargará por su cuenta, que es
+    // el comportamiento seguro por defecto.
+  }
+}
+
 export async function iniciarActualizaciones(): Promise<void> {
   if (!('serviceWorker' in navigator)) return
+
+  anunciarQueSabemosActualizar()
+
+  navigator.serviceWorker.addEventListener('message', (e) => {
+    if ((e.data as { tipo?: string })?.tipo !== 'recarga-por-version-nueva') return
+    if (recargando) return
+    recargando = true
+    location.reload()
+  })
 
   // Si ya hay un controlador, esta pestaña viene de una versión anterior: un
   // cambio de controlador significa versión nueva y hay que recargar. En la
