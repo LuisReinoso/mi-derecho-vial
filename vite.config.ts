@@ -63,6 +63,31 @@ export default defineConfig({
         orientation: 'portrait',
         start_url: base,
         scope: base,
+        // Mantener pulsado el ícono lleva directo a grabar: un toque en vez de
+        // abrir la app y buscar el botón.
+        shortcuts: [
+          {
+            name: 'Grabar ya',
+            short_name: 'Grabar',
+            description: 'Empieza a grabar el control de inmediato',
+            url: `${base}#grabar`,
+            icons: [{ src: 'icon-192.png', sizes: '192x192' }],
+          },
+          {
+            name: 'Buscar un artículo',
+            short_name: 'Buscar',
+            description: 'Contrasta el artículo que te están diciendo',
+            url: `${base}#ahora`,
+            icons: [{ src: 'icon-192.png', sizes: '192x192' }],
+          },
+          {
+            name: 'Mis derechos',
+            short_name: 'Derechos',
+            description: 'Qué puedes hacer y cómo se paga una multa',
+            url: `${base}#derechos`,
+            icons: [{ src: 'icon-192.png', sizes: '192x192' }],
+          },
+        ],
         icons: [
           { src: 'icon-192.png', sizes: '192x192', type: 'image/png' },
           { src: 'icon-512.png', sizes: '512x512', type: 'image/png' },

@@ -14,13 +14,12 @@
  */
 import { CORPUS } from './lexico'
 import { clave } from '../coip'
+import { ALMACENES, escribir, leer } from '../../evidencia/db'
 
 export const MODELO = 'Xenova/multilingual-e5-small'
 export const DIMENSIONES = 384
 
-const DB = 'mi-derecho-vial'
-const ALMACEN = 'vectores'
-const VERSION_INDICE = 1
+const CLAVE_INDICE = () => `${MODELO}|${CORPUS.length}`
 
 export type EstadoSemantico =
   | { fase: 'apagado' }
@@ -53,47 +52,17 @@ function emitir(nuevo: EstadoSemantico): void {
 // Persistencia de los vectores
 // ---------------------------------------------------------------------------
 
-function abrirDb(): Promise<IDBDatabase> {
-  return new Promise((resolver, rechazar) => {
-    const req = indexedDB.open(DB, VERSION_INDICE)
-    req.onupgradeneeded = () => {
-      const db = req.result
-      if (!db.objectStoreNames.contains(ALMACEN)) db.createObjectStore(ALMACEN)
-    }
-    req.onsuccess = () => resolver(req.result)
-    req.onerror = () => rechazar(req.error ?? new Error('No se pudo abrir IndexedDB'))
-  })
-}
-
 async function leerIndice(): Promise<Float32Array | null> {
-  const db = await abrirDb()
-  return new Promise((resolver) => {
-    const tx = db.transaction(ALMACEN, 'readonly')
-    const req = tx.objectStore(ALMACEN).get(`${MODELO}|${CORPUS.length}`)
-    req.onsuccess = () => resolver((req.result as Float32Array | undefined) ?? null)
-    req.onerror = () => resolver(null)
-  })
+  return leer<Float32Array | null>(ALMACENES.vectores, (s) => s.get(CLAVE_INDICE()), null)
 }
 
 async function guardarIndice(vectores: Float32Array): Promise<void> {
-  const db = await abrirDb()
-  await new Promise<void>((resolver, rechazar) => {
-    const tx = db.transaction(ALMACEN, 'readwrite')
-    tx.objectStore(ALMACEN).put(vectores, `${MODELO}|${CORPUS.length}`)
-    tx.oncomplete = () => resolver()
-    tx.onerror = () => rechazar(tx.error ?? new Error('No se pudo guardar el índice'))
-  })
+  await escribir(ALMACENES.vectores, (s) => s.put(vectores, CLAVE_INDICE()))
 }
 
 /** Borra el índice y libera el espacio del modelo cacheado por el navegador. */
 export async function olvidarIndice(): Promise<void> {
-  const db = await abrirDb()
-  await new Promise<void>((resolver) => {
-    const tx = db.transaction(ALMACEN, 'readwrite')
-    tx.objectStore(ALMACEN).clear()
-    tx.oncomplete = () => resolver()
-    tx.onerror = () => resolver()
-  })
+  await escribir(ALMACENES.vectores, (s) => s.clear()).catch(() => undefined)
   if ('caches' in globalThis) {
     await caches.delete('transformers-cache').catch(() => false)
   }

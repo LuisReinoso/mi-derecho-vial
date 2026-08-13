@@ -8,15 +8,23 @@ import { el, vaciar } from './dom'
 type Ruta = 'ahora' | 'citacion' | 'evidencia' | 'derechos'
 
 const RUTAS: { id: Ruta; icono: string; titulo: string; vista: () => HTMLElement }[] = [
-  { id: 'ahora', icono: '🎙', titulo: 'Ahora', vista: vistaAhora },
+  { id: 'ahora', icono: '🎙', titulo: 'Ahora', vista: () => vistaAhora(false) },
   { id: 'citacion', icono: '📄', titulo: 'Mi citación', vista: vistaCitacion },
   { id: 'evidencia', icono: '🗂', titulo: 'Evidencia', vista: vistaEvidencia },
   { id: 'derechos', icono: '⚖️', titulo: 'Derechos', vista: vistaDerechos },
 ]
 
+/** `#grabar` es el atajo del ícono: entra directo a grabar, sin pasos. */
+const ATAJO_GRABAR = 'grabar'
+
+function hashActual(): string {
+  return location.hash.replace('#', '')
+}
+
 function rutaActual(): Ruta {
-  const hash = location.hash.replace('#', '') as Ruta
-  return RUTAS.some((r) => r.id === hash) ? hash : 'ahora'
+  const hash = hashActual()
+  if (hash === ATAJO_GRABAR) return 'ahora'
+  return RUTAS.some((r) => r.id === hash) ? (hash as Ruta) : 'ahora'
 }
 
 export function montar(raiz: HTMLElement): void {
@@ -43,7 +51,10 @@ export function montar(raiz: HTMLElement): void {
     })
     vaciar(contenido)
     const definicion = RUTAS.find((r) => r.id === actual)
-    if (definicion) contenido.append(definicion.vista())
+    if (definicion) {
+      const conAtajo = hashActual() === ATAJO_GRABAR
+      contenido.append(conAtajo ? vistaAhora(true) : definicion.vista())
+    }
     window.scrollTo(0, 0)
   }
 

@@ -11,20 +11,31 @@ import { clave } from '../core/coip'
 import { guionDeRefutacion } from '../core/elementos'
 import type { Numeral } from '../core/tipos'
 import entidadesCrudo from '../data/entidades.json'
-import { crearCaso, guardarPieza, listarCasos, pedirPersistencia } from '../evidencia/almacen'
-import type { Caso } from '../evidencia/almacen'
+import {
+  crearCaso,
+  descartarSesion,
+  guardarPieza,
+  listarCasos,
+  pedirPersistencia,
+  rescatarSesion,
+  sesionesInterrumpidas,
+} from '../evidencia/almacen'
+import type { Caso, SesionGrabacion } from '../evidencia/almacen'
 import { iniciarGrabacion, ubicacionActual } from '../evidencia/captura'
 import type { Grabacion } from '../evidencia/captura'
+import { dictar, hayDictado } from './dictado'
+import type { Dictado } from './dictado'
+import { mostrarAlAgente } from './mostrar'
 import { avisar, boton, el, vaciar } from './dom'
 
 const REGLA_DE_ORO = (entidadesCrudo as unknown as { regla_de_oro_pago: string }).regla_de_oro_pago
 
 let grabacion: Grabacion | null = null
 let casoActivo: Caso | null = null
-/** Artículo que el agente dice que te va a poner, para comparar contra él. */
-let numeralDelAgente: Numeral | null = null
 let inicioGrabacion = 0
 let cronometro: number | null = null
+/** Artículo que el agente dice que te va a poner, para comparar contra él. */
+let numeralDelAgente: Numeral | null = null
 
 async function casoParaGrabar(): Promise<Caso> {
   if (casoActivo) return casoActivo
@@ -99,6 +110,13 @@ function tarjetaResultado(r: Resultado, alFijar: (n: Numeral) => void): HTMLElem
   )
   tarjeta.append(fuente)
 
+  const acciones = el('div', { class: 'fila' })
+  acciones.append(boton('Mostrar al agente', () => mostrarAlAgente(n), 'fantasma compacto'))
+  if (!fijado) {
+    acciones.append(boton('Es el que él me dice', () => alFijar(n), 'fantasma compacto'))
+  }
+  tarjeta.append(acciones)
+
   // Comparación contra lo que el agente dice que te va a poner.
   if (fijado && clave(fijado) !== clave(n)) {
     const suyo = calcularMulta(fijado, sbu).monto
@@ -106,7 +124,7 @@ function tarjetaResultado(r: Resultado, alFijar: (n: Numeral) => void): HTMLElem
     tarjeta.append(
       el(
         'div',
-        { class: diferencia > 0 ? 'aviso' : 'aviso' },
+        { class: 'aviso' },
         diferencia === 0
           ? 'Cuesta lo mismo que el artículo que él invoca.'
           : diferencia < 0
@@ -114,8 +132,6 @@ function tarjetaResultado(r: Resultado, alFijar: (n: Numeral) => void): HTMLElem
             : `${formatearUsd(diferencia)} más que el Art. ${fijado.articulo}.${fijado.literal} que él invoca.`,
       ),
     )
-  } else if (!fijado) {
-    tarjeta.append(boton('Es el que me está diciendo el agente', () => alFijar(n), 'fantasma compacto'))
   }
 
   return tarjeta
@@ -145,12 +161,57 @@ function bandaDelAgente(numeral: Numeral, alQuitar: () => void): HTMLElement {
       { class: 'sutil' },
       'Ahora busca abajo lo que realmente pasó: si encaja en otro numeral, verás la diferencia en dólares.',
     ),
-    boton('Quitar', alQuitar, 'fantasma compacto'),
+    el(
+      'div',
+      { class: 'fila' },
+      boton('Mostrar al agente', () => mostrarAlAgente(numeral), 'fantasma compacto'),
+      boton('Quitar', alQuitar, 'fantasma compacto'),
+    ),
   )
   return banda
 }
 
-export function vistaAhora(): HTMLElement {
+/** Aviso de grabaciones que quedaron a medias porque la app se cerró. */
+function bloqueRescate(sesiones: SesionGrabacion[], refrescar: () => void): HTMLElement {
+  const bloque = el('div', { class: 'aviso' })
+  bloque.append(
+    el(
+      'p',
+      {},
+      `Hay ${sesiones.length} grabación(es) que quedaron sin cerrar: la app se cerró antes de detenerlas. ` +
+        `Lo que alcanzó a escribirse está a salvo.`,
+    ),
+  )
+  for (const sesion of sesiones) {
+    bloque.append(
+      el(
+        'div',
+        { class: 'fila' },
+        boton(
+          `Recuperar (${new Date(sesion.iniciadaEn).toLocaleString('es-EC')})`,
+          async () => {
+            const pieza = await rescatarSesion(sesion)
+            avisar(pieza ? 'Grabación recuperada y guardada en Evidencia.' : 'Esa grabación estaba vacía.')
+            refrescar()
+          },
+          'compacto',
+        ),
+        boton(
+          'Descartar',
+          async () => {
+            if (!confirm('¿Descartar esta grabación? No se puede deshacer.')) return
+            await descartarSesion(sesion)
+            refrescar()
+          },
+          'compacto fantasma',
+        ),
+      ),
+    )
+  }
+  return bloque
+}
+
+export function vistaAhora(autoGrabar = false): HTMLElement {
   const raiz = el('main')
 
   raiz.append(
@@ -158,11 +219,21 @@ export function vistaAhora(): HTMLElement {
     el('p', { class: 'sutil' }, 'Sin internet, sin cuenta, sin enviar nada a ningún lado.'),
   )
 
+  const rescate = el('div')
+  raiz.append(rescate)
+
+  const revisarRescates = () => {
+    void sesionesInterrumpidas().then((sesiones) => {
+      vaciar(rescate)
+      if (sesiones.length > 0) rescate.append(bloqueRescate(sesiones, revisarRescates))
+    })
+  }
+
   // --- Grabación ------------------------------------------------------------
   const estadoGrabacion = el('p', { class: 'sutil' }, 'Nada se está grabando.')
-  const btnGrabar = boton('● GRABAR AUDIO', () => alternarGrabacion(false), 'peligro')
-  const btnVideo = boton('Grabar video', () => alternarGrabacion(true), 'fantasma compacto')
-  const btnUbicacion = boton('Guardar mi ubicación', guardarUbicacion, 'fantasma compacto')
+  const btnGrabar = boton('● GRABAR AUDIO', () => void alternarGrabacion(false), 'peligro')
+  const btnVideo = boton('Grabar video', () => void alternarGrabacion(true), 'fantasma compacto')
+  const btnUbicacion = boton('Guardar mi ubicación', () => void guardarUbicacion(), 'fantasma compacto')
 
   async function alternarGrabacion(video: boolean): Promise<void> {
     if (grabacion) {
@@ -171,36 +242,35 @@ export function vistaAhora(): HTMLElement {
       if (cronometro) window.clearInterval(cronometro)
       btnGrabar.classList.remove('grabando')
       btnGrabar.textContent = '● GRABAR AUDIO'
+      estadoGrabacion.textContent = 'Cerrando la grabación…'
       try {
-        const blob = await g.detener()
-        const caso = await casoParaGrabar()
         const ubicacion = await ubicacionActual(4000)
-        const pieza = await guardarPieza({
-          caso: caso.id,
-          tipo: blob.type.startsWith('video') ? 'video' : 'audio',
-          blob,
-          nombreArchivo: `grabacion.${blob.type.includes('mp4') ? 'mp4' : 'webm'}`,
-          ubicacion,
-        })
-        estadoGrabacion.textContent = `Guardado (${formatearDuracion(Date.now() - inicioGrabacion)}). Huella SHA-256: ${pieza.hash.slice(0, 16)}…`
-        avisar('Grabación guardada en tu teléfono.')
+        const pieza = await g.detener(ubicacion)
+        estadoGrabacion.textContent = pieza
+          ? `Guardado (${formatearDuracion(Date.now() - inicioGrabacion)}). Huella SHA-256: ${pieza.hash.slice(0, 16)}…`
+          : 'No se alcanzó a grabar nada.'
+        if (pieza) avisar('Grabación guardada en tu teléfono.')
       } catch (e) {
-        estadoGrabacion.textContent = `No se pudo guardar: ${e instanceof Error ? e.message : String(e)}`
+        estadoGrabacion.textContent = `No se pudo cerrar: ${e instanceof Error ? e.message : String(e)}. Lo grabado sigue a salvo, recupéralo al reabrir la app.`
       }
+      revisarRescates()
       return
     }
 
     try {
       await pedirPersistencia()
-      grabacion = await iniciarGrabacion({ video })
+      const caso = await casoParaGrabar()
+      grabacion = await iniciarGrabacion({ video, caso: caso.id })
       inicioGrabacion = Date.now()
       btnGrabar.classList.add('grabando')
       cronometro = window.setInterval(() => {
+        const g = grabacion
         btnGrabar.textContent = `■ DETENER  ${formatearDuracion(Date.now() - inicioGrabacion)}`
+        if (g) {
+          estadoGrabacion.textContent = `${video ? 'Grabando video y audio' : 'Grabando audio'}. ${g.trozosGuardados()} s ya escritos a disco: aunque se cierre la app, no se pierden.`
+        }
       }, 500)
-      estadoGrabacion.textContent = video
-        ? 'Grabando video y audio. Se guarda solo en este teléfono.'
-        : 'Grabando audio. Se guarda solo en este teléfono.'
+      estadoGrabacion.textContent = 'Grabando. Se guarda solo en este teléfono.'
     } catch (e) {
       estadoGrabacion.textContent =
         'No se pudo acceder al micrófono. Revisa los permisos del navegador. ' +
@@ -242,40 +312,19 @@ export function vistaAhora(): HTMLElement {
         'Si no, descríbelo como salga: "me pasé el rojo", "me metí al revés".',
     ),
   )
+
   const entrada = el('input', {
     type: 'search',
     placeholder: 'ej: 389.1, contravía, sin casco…',
     'aria-label': 'Número del artículo o descripción de la infracción',
     enterkeyhint: 'search',
     autocomplete: 'off',
-    inputmode: 'text',
   })
+
   const banda = el('div')
   const resultados = el('div')
-  raiz.append(entrada, banda, resultados)
 
   let ultimaConsulta = ''
-
-  const repintar = () => {
-    vaciar(banda)
-    if (numeralDelAgente) {
-      banda.append(
-        bandaDelAgente(numeralDelAgente, () => {
-          numeralDelAgente = null
-          repintar()
-        }),
-      )
-    }
-    pintar(buscarRapido(ultimaConsulta, 4), ultimaConsulta)
-  }
-
-  const fijar = (n: Numeral) => {
-    numeralDelAgente = n
-    entrada.value = ''
-    ultimaConsulta = ''
-    entrada.focus()
-    repintar()
-  }
 
   const pintar = (lista: Resultado[], consulta: string) => {
     vaciar(resultados)
@@ -302,8 +351,28 @@ export function vistaAhora(): HTMLElement {
     for (const r of lista) resultados.append(tarjetaResultado(r, fijar))
   }
 
-  entrada.addEventListener('input', () => {
-    const consulta = entrada.value.trim()
+  const repintar = () => {
+    vaciar(banda)
+    if (numeralDelAgente) {
+      banda.append(
+        bandaDelAgente(numeralDelAgente, () => {
+          numeralDelAgente = null
+          repintar()
+        }),
+      )
+    }
+    pintar(buscarRapido(ultimaConsulta, 4), ultimaConsulta)
+  }
+
+  function fijar(n: Numeral): void {
+    numeralDelAgente = n
+    entrada.value = ''
+    ultimaConsulta = ''
+    repintar()
+    entrada.focus()
+  }
+
+  const consultar = (consulta: string) => {
     ultimaConsulta = consulta
     // Respuesta inmediata con BM25: en la calle, esperar no es una opción.
     pintar(buscarRapido(consulta, 4), consulta)
@@ -313,7 +382,47 @@ export function vistaAhora(): HTMLElement {
         if (ultimaConsulta === consulta) pintar(mejores, consulta)
       })
     }
-  })
+  }
+
+  entrada.addEventListener('input', () => consultar(entrada.value.trim()))
+
+  // --- Dictado --------------------------------------------------------------
+  const filaBusqueda = el('div', { class: 'fila-busqueda' })
+  filaBusqueda.append(entrada)
+
+  if (hayDictado()) {
+    let sesionVoz: Dictado | null = null
+    const btnVoz = boton('🎤', () => {}, 'voz')
+    btnVoz.setAttribute('aria-label', 'Dictar en voz alta')
+    btnVoz.addEventListener('click', () => {
+      if (sesionVoz) {
+        sesionVoz.detener()
+        return
+      }
+      sesionVoz = dictar(
+        (texto) => {
+          entrada.value = texto
+          consultar(texto.trim())
+        },
+        (motivo, detalle) => {
+          sesionVoz = null
+          btnVoz.classList.remove('grabando')
+          btnVoz.textContent = '🎤'
+          if (motivo === 'error' && detalle) avisar(detalle)
+        },
+      )
+      if (sesionVoz) {
+        btnVoz.classList.add('grabando')
+        btnVoz.textContent = '■'
+        avisar('Habla. Toca otra vez para parar.')
+      } else {
+        avisar('El dictado no está disponible aquí. Escribe a mano.')
+      }
+    })
+    filaBusqueda.append(btnVoz)
+  }
+
+  raiz.append(filaBusqueda, banda, resultados)
 
   raiz.append(
     el(
@@ -325,6 +434,20 @@ export function vistaAhora(): HTMLElement {
         'o con la Defensoría Pública, que patrocina gratis.',
     ),
   )
+
+  revisarRescates()
+  if (numeralDelAgente) repintar()
+
+  // Entrada por atajo del ícono: arranca a grabar sin que haya que buscar nada.
+  if (autoGrabar && !grabacion) {
+    void alternarGrabacion(false).then(() => {
+      if (!grabacion) {
+        estadoGrabacion.textContent =
+          'Toca GRABAR para empezar. El navegador pide un toque antes de abrir el micrófono.'
+        btnGrabar.focus()
+      }
+    })
+  }
 
   return raiz
 }
