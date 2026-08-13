@@ -114,25 +114,27 @@ function bloqueIa(): HTMLElement {
 }
 
 /**
- * Qué versión está corriendo y cómo forzar la última. Parece un detalle, pero
- * un teléfono que se queda con un bundle viejo en caché falla justo cuando más
- * falta hace, y sin esto no hay forma de saberlo desde la calle.
+ * Qué versión está corriendo. La actualización es automática: esto está aquí
+ * para poder diagnosticar desde la calle, no para que nadie tenga que pulsarlo.
  */
 function bloqueVersion(): HTMLElement {
   const seccion = el('section', { class: 'tarjeta' })
   seccion.append(
     el('h3', {}, 'Versión instalada'),
     el('p', { class: 'sutil' }, `Compilada el ${__VERSION__} (UTC).`),
+    el(
+      'p',
+      { class: 'sutil' },
+      'La app se actualiza sola: comprueba al abrirla, al volver a ella y cada media hora. ' +
+        'Si hay versión nueva se aplica al momento, salvo que estés grabando: en ese caso espera ' +
+        'a que termines.',
+    ),
     boton(
-      'Buscar actualización',
+      'Comprobar ahora',
       async () => {
-        try {
-          const { buscarActualizacion } = await import('../main')
-          await buscarActualizacion()
-          avisar('Buscando la última versión. Si hay una nueva, la app se recargará sola.')
-        } catch {
-          location.reload()
-        }
+        const { comprobarAhora } = await import('../actualizacion')
+        await comprobarAhora()
+        avisar('Comprobado. Si había una versión nueva, la app se recargará sola.')
       },
       'fantasma compacto',
     ),

@@ -311,6 +311,21 @@ pre {
   }
 }
 
+/* Aviso de actualización que espera a que termines */
+.aviso-actualizacion {
+  position: fixed;
+  left: 12px;
+  right: 12px;
+  bottom: calc(var(--nav) + 12px);
+  z-index: 40;
+  background: var(--fondo-3);
+  border: 1px solid var(--acento);
+  border-radius: var(--radio);
+  padding: 12px;
+  text-align: center;
+  font-size: 0.9rem;
+}
+
 /* Buscador con botón de dictado al lado */
 .fila-busqueda {
   display: flex;

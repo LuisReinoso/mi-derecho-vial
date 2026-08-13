@@ -24,7 +24,11 @@ export default defineConfig({
   },
   plugins: [
     VitePWA({
-      registerType: 'autoUpdate',
+      // El registro y la recarga los lleva src/actualizacion.ts a mano. Con el
+      // registro automático se llegaba a un estado en el que el service worker
+      // nuevo estaba activo pero la página seguía ejecutando el código viejo.
+      registerType: 'prompt',
+      injectRegister: false,
       includeAssets: ['favicon.svg', 'icon-192.png', 'icon-512.png', 'icon-maskable-512.png'],
       workbox: {
         globPatterns: ['**/*.{js,css,html,svg,png,ico,webmanifest}'],
@@ -33,10 +37,11 @@ export default defineConfig({
         globIgnores: ['**/transformers*.js'],
         navigateFallback: `${base}index.html`,
         cleanupOutdatedCaches: true,
-        // Que una versión nueva tome el control de inmediato. Quedarse con un
-        // bundle viejo en caché es peor que no tener caché: el código antiguo
-        // se topa con datos nuevos y falla en el peor momento.
-        skipWaiting: true,
+        // skipWaiting a false a propósito: el service worker nuevo espera a que
+        // la app diga "ahora". Si se activara solo, la página seguiría
+        // corriendo código viejo contra assets nuevos, que es exactamente el
+        // estado mezclado que rompió la base de datos una vez.
+        skipWaiting: false,
         clientsClaim: true,
         runtimeCaching: [
           {
@@ -64,10 +69,10 @@ export default defineConfig({
         ],
       },
       manifest: {
-        name: 'Verificador de Multas EC',
-        short_name: 'Multas EC',
+        name: 'Mi Derecho Vial',
+        short_name: 'Mi Derecho Vial',
         description:
-          'Contrasta tu citación de tránsito contra el COIP. Montos, plazos y derechos, sin internet.',
+          'La ley de tránsito en la mano durante un control. Montos, plazos, derechos y evidencia, sin internet.',
         lang: 'es-EC',
         theme_color: '#0b1220',
         background_color: '#0b1220',
